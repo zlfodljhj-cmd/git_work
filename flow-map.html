@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<title>VIP Lounge — 화면 흐름도</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #F0F2F5;
+    font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+    padding: 40px 36px 80px;
+    color: #172B4D;
+  }
+  .page-header { margin-bottom: 36px; }
+  .page-header .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #5E6C84; margin-bottom: 6px;
+  }
+  .page-header h1 { font-size: 20px; font-weight: 700; color: #172B4D; margin-bottom: 3px; }
+  .page-header p  { font-size: 13px; color: #5E6C84; }
+
+  .section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .badge { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; }
+  .b-journey { background: #172B4D; color: #fff; }
+  .b-p1      { background: #0052CC; color: #fff; }
+  .b-p2      { background: #6554C0; color: #fff; }
+  .b-sub     { background: #DFE1E6; color: #42526E; }
+  .section-title { font-size: 14px; font-weight: 600; color: #172B4D; }
+  .section-note  { font-size: 12px; color: #97A0AF; }
+
+  .chart-card {
+    background: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #DFE1E6;
+    box-shadow: 0 1px 3px rgba(9,30,66,0.08), 0 0 1px rgba(9,30,66,0.1);
+    overflow: hidden;
+  }
+  .chart-scroll { overflow-x: auto; padding: 36px 40px 40px; }
+  .chart-scroll svg { display: block; overflow: visible; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    padding: 12px 24px;
+    border-top: 1px solid #DFE1E6;
+    background: #FAFBFC;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #5E6C84; }
+  .ls { width: 14px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .ld { width: 11px; height: 11px; border-radius: 1px; transform: rotate(45deg); flex-shrink: 0; }
+
+  /* Stage labels above diagram */
+  .stage-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 10px;
+    padding: 0 40px;
+  }
+  .stage-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #97A0AF;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="eyebrow">plan-v1.md — Section 2</div>
+  <h1>VIP Lounge 화면 흐름도</h1>
+  <p>유입 안착 시나리오 전체 · Phase 1 VIP Lounge 상세 · Phase 2 Lucky Rail · 취소 타이밍 정책</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 0 — 유입 안착 시나리오 (전체 여정)
+══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="badge b-journey">유입 안착</span>
+    <span class="section-title">유저 여정 전체 플로우 — 웹 방문 → 로그인 → VIP Lounge → 재방문</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-scroll">
+      <svg width="1520" height="300" viewBox="0 0 1520 300">
+        <defs>
+          <filter id="sh0" x="-8%" y="-15%" width="116%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-color="#091E42" flood-opacity="0.08"/>
+          </filter>
+          <marker id="a0"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#8993A4"/></marker>
+          <marker id="a0r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#FF5630"/></marker>
+          <marker id="a0g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#36B37E"/></marker>
+          <marker id="a0b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#0052CC"/></marker>
+        </defs>
+
+        <!-- ── 단계 구분선 (배경 컬럼) ── -->
+        <rect x="0"    y="0" width="170"  height="300" fill="#F8FFF9" opacity="0.6"/>
+        <rect x="170"  y="0" width="190"  height="300" fill="#FFFDF0" opacity="0.6"/>
+        <rect x="360"  y="0" width="380"  height="300" fill="#F0F4FF" opacity="0.6"/>
+        <rect x="740"  y="0" width="200"  height="300" fill="#F0FFF4" opacity="0.6"/>
+        <rect x="940"  y="0" width="400"  height="300" fill="#F9F0FF" opacity="0.6"/>
+        <rect x="1340" y="0" width="180"  height="300" fill="#FFF9F0" opacity="0.6"/>
+
+        <!-- 단계 레이블 -->
+        <text x="85"   y="20" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.08em" fill="#97A0AF">ENTRY</text>
+        <text x="255"  y="20" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.08em" fill="#97A0AF">DISCOVER</text>
+        <text x="550"  y="20" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.08em" fill="#97A0AF">LOGIN</text>
+        <text x="840"  y="20" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.08em" fill="#97A0AF">VIP CHECK</text>
+        <text x="1140" y="20" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.08em" fill="#97A0AF">ENGAGE</text>
+        <text x="1430" y="20" text-anchor="middle" font-size="9.5" font-weight="700" letter-spacing="0.08em" fill="#97A0AF">RETURN</text>
+
+        <!-- 컬럼 경계선 -->
+        <line x1="170"  y1="30" x2="170"  y2="300" stroke="#E8EBEE" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="360"  y1="30" x2="360"  y2="300" stroke="#E8EBEE" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="740"  y1="30" x2="740"  y2="300" stroke="#E8EBEE" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="940"  y1="30" x2="940"  y2="300" stroke="#E8EBEE" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="1340" y1="30" x2="1340" y2="300" stroke="#E8EBEE" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <!-- ─────────────── ARROWS ─────────────── -->
+
+        <!-- 웹 방문 → VIP Lounge 클릭 -->
+        <line x1="140" y1="125" x2="180" y2="125" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a0)"/>
+
+        <!-- VIP Lounge 클릭 → 계정 유무♦ -->
+        <line x1="300" y1="125" x2="368" y2="125" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a0)"/>
+
+        <!-- 계정 유무♦ → 로그인  "Y (있음)" -->
+        <line x1="460" y1="125" x2="518" y2="125" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a0)"/>
+        <rect x="463" y="109" width="34" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="480" y="120" text-anchor="middle" font-size="10" fill="#5E6C84">Y 있음</text>
+
+        <!-- 계정 유무♦ → 비로그인/미가입  "N (없음)" (아래) -->
+        <line x1="412" y1="169" x2="412" y2="215" stroke="#FF5630" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a0r)"/>
+        <rect x="418" y="184" width="34" height="15" rx="2" fill="#FFEBE6" stroke="#FFBDAD" stroke-width="1"/>
+        <text x="435" y="195" text-anchor="middle" font-size="10" fill="#FF5630">N 없음</text>
+
+        <!-- 미가입 → 회원가입 후 로그인 재진입 (bent 위로) -->
+        <path d="M490,237 L560,237 L560,155" stroke="#8993A4" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#a0)"/>
+        <rect x="488" y="223" width="64" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="520" y="234" text-anchor="middle" font-size="10" fill="#97A0AF">가입 후 재진입</text>
+
+        <!-- 로그인 → 로그인 완료 -->
+        <line x1="640" y1="125" x2="698" y2="125" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a0)"/>
+
+        <!-- 로그인 완료 → VIP 등급♦ -->
+        <line x1="810" y1="125" x2="858" y2="125" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a0)"/>
+
+        <!-- VIP 등급♦ → VIP Lounge 진입  "VIP" -->
+        <line x1="946" y1="125" x2="1000" y2="125" stroke="#36B37E" stroke-width="1.5" marker-end="url(#a0g)"/>
+        <rect x="950" y="109" width="24" height="15" rx="2" fill="#E3FCEF" stroke="#ABF5D1" stroke-width="1"/>
+        <text x="962" y="120" text-anchor="middle" font-size="10" fill="#006644" font-weight="600">VIP</text>
+
+        <!-- VIP 등급♦ → 비VIP 화면  "비VIP" (아래) -->
+        <line x1="902" y1="169" x2="902" y2="215" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a0)"/>
+        <rect x="908" y="184" width="36" height="15" rx="2" fill="#F4F5F7" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="926" y="195" text-anchor="middle" font-size="10" fill="#97A0AF">비VIP</text>
+
+        <!-- VIP Lounge 진입 → 콘텐츠 참여 -->
+        <line x1="1120" y1="125" x2="1178" y2="125" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a0)"/>
+        <rect x="1122" y="109" width="52" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="1148" y="120" text-anchor="middle" font-size="10" fill="#5E6C84">Phase 1 플로우 ↓</text>
+
+        <!-- 콘텐츠 참여 → 재방문 루프 -->
+        <line x1="1298" y1="125" x2="1358" y2="125" stroke="#36B37E" stroke-width="1.5" marker-end="url(#a0g)"/>
+
+        <!-- 재방문 → 루프 화살표 (위로 돌아오는 아크) -->
+        <path d="M1460,96 L1460,55 L1060,55 L1060,96" stroke="#0052CC" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#a0b)"/>
+        <rect x="1218" y="40" width="64" height="15" rx="2" fill="#E6EFFF" stroke="#4C9AFF" stroke-width="1"/>
+        <text x="1250" y="51" text-anchor="middle" font-size="10" fill="#0052CC" font-weight="600">D+1 재방문</text>
+
+        <!-- ─────────────── NODES ─────────────── -->
+
+        <!-- 웹 방문 (pill, green) -->
+        <g filter="url(#sh0)">
+          <rect x="18" y="105" width="122" height="40" rx="20" fill="#E3FCEF" stroke="#36B37E" stroke-width="1.5"/>
+        </g>
+        <text x="79" y="121" text-anchor="middle" font-size="11.5" font-weight="700" fill="#006644">웹 방문</text>
+        <text x="79" y="136" text-anchor="middle" font-size="10" fill="#36B37E">첫방문 · 재방문</text>
+
+        <!-- VIP Lounge 클릭 (amber, action) -->
+        <g filter="url(#sh0)">
+          <rect x="180" y="96" width="120" height="58" rx="7" fill="#FFFAE6" stroke="#FF991F" stroke-width="1.5"/>
+        </g>
+        <text x="240" y="115" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">GNB 탐색</text>
+        <text x="240" y="130" text-anchor="middle" font-size="10.5" fill="#FF8B00">VIP Lounge 클릭</text>
+        <text x="240" y="144" text-anchor="middle" font-size="10" fill="#97A0AF">● pulse 시그널</text>
+
+        <!-- 계정 유무♦ (diamond, sky) -->
+        <g filter="url(#sh0)">
+          <rect x="368" y="81" width="88" height="88" rx="5" transform="rotate(45,412,125)" fill="#E6F0FF" stroke="#2684FF" stroke-width="1.5"/>
+        </g>
+        <text x="412" y="120" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0747A6">계정</text>
+        <text x="412" y="134" text-anchor="middle" font-size="10.5" fill="#0747A6">유무?</text>
+
+        <!-- 로그인 (blue) -->
+        <g filter="url(#sh0)">
+          <rect x="518" y="96" width="122" height="58" rx="7" fill="#DEEBFF" stroke="#4C9AFF" stroke-width="1.5"/>
+        </g>
+        <text x="579" y="115" text-anchor="middle" font-size="11" font-weight="700" fill="#0747A6">로그인</text>
+        <text x="579" y="130" text-anchor="middle" font-size="10.5" fill="#0052CC">계정 인증</text>
+        <text x="579" y="144" text-anchor="middle" font-size="10" fill="#97A0AF">이메일 / SNS</text>
+
+        <!-- 로그인 완료 (green) -->
+        <g filter="url(#sh0)">
+          <rect x="698" y="96" width="112" height="58" rx="7" fill="#E3FCEF" stroke="#36B37E" stroke-width="1.5"/>
+        </g>
+        <text x="754" y="115" text-anchor="middle" font-size="11" font-weight="700" fill="#006644">로그인 완료</text>
+        <text x="754" y="130" text-anchor="middle" font-size="10.5" fill="#36B37E">세션 생성</text>
+        <text x="754" y="144" text-anchor="middle" font-size="10" fill="#97A0AF">VIP 등급 조회</text>
+
+        <!-- VIP 등급♦ (diamond, sky) -->
+        <g filter="url(#sh0)">
+          <rect x="858" y="81" width="88" height="88" rx="5" transform="rotate(45,902,125)" fill="#E6F0FF" stroke="#2684FF" stroke-width="1.5"/>
+        </g>
+        <text x="902" y="120" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0747A6">VIP</text>
+        <text x="902" y="134" text-anchor="middle" font-size="10.5" fill="#0747A6">등급?</text>
+
+        <!-- VIP Lounge 진입 (green, success) -->
+        <g filter="url(#sh0)">
+          <rect x="1000" y="96" width="120" height="58" rx="7" fill="#E3FCEF" stroke="#36B37E" stroke-width="1.5"/>
+        </g>
+        <text x="1060" y="115" text-anchor="middle" font-size="11" font-weight="700" fill="#006644">VIP Lounge</text>
+        <text x="1060" y="130" text-anchor="middle" font-size="10.5" fill="#36B37E">진입 완료</text>
+        <text x="1060" y="144" text-anchor="middle" font-size="10" fill="#97A0AF">S01-E 로딩 시작</text>
+
+        <!-- 콘텐츠 참여 (purple) -->
+        <g filter="url(#sh0)">
+          <rect x="1178" y="96" width="120" height="58" rx="7" fill="#EAE6FF" stroke="#8777D9" stroke-width="1.5"/>
+        </g>
+        <text x="1238" y="115" text-anchor="middle" font-size="11" font-weight="700" fill="#403294">콘텐츠 참여</text>
+        <text x="1238" y="130" text-anchor="middle" font-size="10.5" fill="#6554C0">도장 · 통장 · 게임</text>
+        <text x="1238" y="144" text-anchor="middle" font-size="10" fill="#97A0AF">DU Banks 플로우</text>
+
+        <!-- 재방문 루프 (pill, dark blue) -->
+        <g filter="url(#sh0)">
+          <rect x="1358" y="105" width="122" height="40" rx="20" fill="#172B4D" stroke="#172B4D" stroke-width="1.5"/>
+        </g>
+        <text x="1419" y="121" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">재방문</text>
+        <text x="1419" y="136" text-anchor="middle" font-size="10" fill="#8C9EC7">D+1 루프</text>
+
+        <!-- 비로그인/미가입 (error, below 계정♦) -->
+        <g filter="url(#sh0)">
+          <rect x="348" y="215" width="128" height="52" rx="7" fill="#FFEBE6" stroke="#FF5630" stroke-width="1.5" stroke-dasharray="5 3"/>
+        </g>
+        <text x="412" y="234" text-anchor="middle" font-size="11" font-weight="700" fill="#BF2600">미가입 · 비로그인</text>
+        <text x="412" y="249" text-anchor="middle" font-size="10" fill="#FF5630">회원가입 유도</text>
+        <text x="412" y="261" text-anchor="middle" font-size="10" fill="#97A0AF">or 이탈</text>
+
+        <!-- 비VIP (slate, below VIP♦) -->
+        <g filter="url(#sh0)">
+          <rect x="858" y="215" width="90" height="52" rx="7" fill="#F4F5F7" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="5 3"/>
+        </g>
+        <text x="903" y="234" text-anchor="middle" font-size="11" font-weight="700" fill="#5E6C84">비VIP</text>
+        <text x="903" y="249" text-anchor="middle" font-size="10" fill="#97A0AF">일반 화면</text>
+        <text x="903" y="261" text-anchor="middle" font-size="10" fill="#C1C7D0">업셀 유도</text>
+
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="ls" style="background:#E3FCEF;border:1.5px solid #36B37E;"></div>진입 / 완료 (성공)</div>
+      <div class="legend-item"><div class="ls" style="background:#FFFAE6;border:1.5px solid #FF991F;"></div>액션 필요</div>
+      <div class="legend-item"><div class="ls" style="background:#DEEBFF;border:1.5px solid #4C9AFF;"></div>인증 단계</div>
+      <div class="legend-item"><div class="ld" style="background:#E6F0FF;border:2px solid #2684FF;"></div>분기 · 결정</div>
+      <div class="legend-item"><div class="ls" style="background:#EAE6FF;border:1.5px solid #8777D9;"></div>콘텐츠 참여</div>
+      <div class="legend-item"><div class="ls" style="background:#172B4D;border:1.5px solid #172B4D;"></div>재방문 루프</div>
+      <div class="legend-item"><div class="ls" style="background:#FFEBE6;border:1.5px dashed #FF5630;"></div>이탈 / 미가입 (오프 패스)</div>
+      <div class="legend-item"><div class="ls" style="background:#F4F5F7;border:1.5px dashed #C1C7D0;"></div>비VIP (이탈)</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 1 — Phase 1 VIP Lounge 화면 상세 플로우
+══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="badge b-p1">Phase 1</span>
+    <span class="section-title">DU Banks — VIP Lounge 화면 상세 플로우</span>
+    <span class="section-note">로그인 완료 + VIP 확인 이후 진행</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-scroll">
+      <!-- 노드 간격 재계산 (cx 기준):
+           Ref pill  cx=72   right=132
+           S01E      cx=252  left=189  right=315  (gap=57)
+           API♦      cx=419  tip-L=375 tip-R=463  (gap=60)
+           BRANCH♦   cx=593  tip-L=549 tip-R=637  (gap=86)
+           S01A      cx=767  left=707  right=827  (gap=70)
+           S02A      cx=957  left=897  right=1017 (gap=70)
+           CANCEL♦   cx=1147 tip-L=1103 tip-R=1191(gap=86)
+           S02B      cx=1321 left=1261 right=1381 (gap=70)
+           GAME pill cx=1501 left=1446 right=1556 (gap=65) -->
+      <svg width="1600" height="440" viewBox="0 0 1600 440">
+        <defs>
+          <filter id="sh1" x="-8%" y="-15%" width="116%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-color="#091E42" flood-opacity="0.08"/>
+          </filter>
+          <marker id="a1"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#8993A4"/></marker>
+          <marker id="a1r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#FF5630"/></marker>
+          <marker id="a1d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#C1C7D0"/></marker>
+          <marker id="a1b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#0052CC"/></marker>
+        </defs>
+
+        <!-- ─── ARROWS (drawn first) ─── -->
+
+        <!-- Ref → S01E (dashed connector) -->
+        <line x1="132" y1="136" x2="189" y2="136" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a1d)"/>
+
+        <!-- S01E → API♦ -->
+        <line x1="315" y1="136" x2="375" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+
+        <!-- API♦ → BRANCH♦  "성공" -->
+        <line x1="463" y1="136" x2="549" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="480" y="120" width="36" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="498" y="131" text-anchor="middle" font-size="10" fill="#5E6C84">성공</text>
+
+        <!-- API♦ → S01F  "실패" (vertical) -->
+        <line x1="419" y1="180" x2="419" y2="256" stroke="#FF5630" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#a1r)"/>
+        <rect x="425" y="210" width="26" height="15" rx="2" fill="#fff" stroke="#FFBDAD" stroke-width="1"/>
+        <text x="438" y="221" text-anchor="middle" font-size="10" fill="#FF5630">실패</text>
+
+        <!-- BRANCH♦ → S01A  "미방문" -->
+        <line x1="637" y1="136" x2="707" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="643" y="120" width="38" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="662" y="131" text-anchor="middle" font-size="10" fill="#5E6C84">미방문</text>
+
+        <!-- BRANCH♦ → S01B  "완료" (vertical) -->
+        <line x1="593" y1="180" x2="593" y2="256" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="599" y="210" width="26" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="612" y="221" text-anchor="middle" font-size="10" fill="#5E6C84">완료</text>
+
+        <!-- BRANCH♦ → S01CD  "첫방문·복귀" (bent: left+down, dashed) -->
+        <path d="M549,136 L512,136 L512,382 L531,382" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#a1d)"/>
+
+        <!-- S01A → S02A  "Stamp 탭" -->
+        <line x1="827" y1="136" x2="897" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="831" y="120" width="54" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="858" y="131" text-anchor="middle" font-size="10" fill="#5E6C84">Stamp 탭</text>
+
+        <!-- S02A → CANCEL♦ -->
+        <line x1="1017" y1="136" x2="1103" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+
+        <!-- CANCEL♦ → S02B  "아니오" -->
+        <line x1="1191" y1="136" x2="1261" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="1199" y="120" width="38" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="1218" y="131" text-anchor="middle" font-size="10" fill="#5E6C84">아니오</text>
+
+        <!-- CANCEL♦ → S01A  "예 (취소)" loop above -->
+        <path d="M1147,92 L1147,48 L767,48 L767,107" stroke="#0052CC" stroke-width="1.5" fill="none" marker-end="url(#a1b)"/>
+        <rect x="920" y="33" width="60" height="15" rx="2" fill="#E6EFFF" stroke="#4C9AFF" stroke-width="1"/>
+        <text x="950" y="44" text-anchor="middle" font-size="10" fill="#0052CC" font-weight="600">예 (취소)</text>
+
+        <!-- S02B → GAME  "Play Game" -->
+        <line x1="1381" y1="136" x2="1446" y2="136" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="1381" y="120" width="65" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="1413" y="131" text-anchor="middle" font-size="10" fill="#5E6C84">Play Game</text>
+
+        <!-- S01B → S02C  "View passbook" -->
+        <line x1="649" y1="282" x2="711" y2="282" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a1)"/>
+        <rect x="651" y="266" width="56" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="679" y="277" text-anchor="middle" font-size="10" fill="#5E6C84">View passbook</text>
+
+        <!-- S02C → BACK  "× 닫기" (long horizontal) -->
+        <line x1="823" y1="282" x2="1261" y2="282" stroke="#C1C7D0" stroke-width="1.5" marker-end="url(#a1d)"/>
+        <rect x="1016" y="266" width="36" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="1034" y="277" text-anchor="middle" font-size="10" fill="#97A0AF">× 닫기</text>
+
+        <!-- S02B → BACK  "× 닫기" (vertical) -->
+        <line x1="1321" y1="165" x2="1321" y2="256" stroke="#C1C7D0" stroke-width="1.5" marker-end="url(#a1d)"/>
+        <rect x="1327" y="200" width="36" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="1345" y="211" text-anchor="middle" font-size="10" fill="#97A0AF">× 닫기</text>
+
+        <!-- ─── NODES ─── -->
+
+        <!-- 연결 참조 pill (dashed) -->
+        <g filter="url(#sh1)">
+          <rect x="12" y="116" width="120" height="40" rx="20" fill="#F4F5F7" stroke="#8993A4" stroke-width="1.5" stroke-dasharray="5 3"/>
+        </g>
+        <text x="72" y="132" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5E6C84">VIP Lounge</text>
+        <text x="72" y="146" text-anchor="middle" font-size="10" fill="#97A0AF">진입 완료 ↑</text>
+
+        <!-- S01-E -->
+        <g filter="url(#sh1)">
+          <rect x="189" y="107" width="126" height="58" rx="7" fill="#DEEBFF" stroke="#4C9AFF" stroke-width="1.5"/>
+        </g>
+        <text x="252" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#0747A6">S01-E</text>
+        <text x="252" y="141" text-anchor="middle" font-size="10.5" fill="#0052CC">로딩 · 스켈레톤</text>
+        <text x="252" y="155" text-anchor="middle" font-size="10" fill="#4C9AFF">LCP &lt; 1.5s</text>
+
+        <!-- API♦  cx=419 -->
+        <g filter="url(#sh1)">
+          <rect x="375" y="92" width="88" height="88" rx="5" transform="rotate(45,419,136)" fill="#E6F0FF" stroke="#2684FF" stroke-width="1.5"/>
+        </g>
+        <text x="419" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#0747A6">API</text>
+        <text x="419" y="145" text-anchor="middle" font-size="10.5" fill="#0747A6">응답</text>
+
+        <!-- BRANCH♦  cx=593 -->
+        <g filter="url(#sh1)">
+          <rect x="549" y="92" width="88" height="88" rx="5" transform="rotate(45,593,136)" fill="#E6F0FF" stroke="#2684FF" stroke-width="1.5"/>
+        </g>
+        <text x="593" y="127" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0747A6">유저 상태</text>
+        <text x="593" y="141" text-anchor="middle" font-size="10.5" fill="#0747A6">분기</text>
+
+        <!-- S01-A  cx=767 -->
+        <g filter="url(#sh1)">
+          <rect x="707" y="107" width="120" height="58" rx="7" fill="#FFFAE6" stroke="#FF991F" stroke-width="1.5"/>
+        </g>
+        <text x="767" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">S01-A</text>
+        <text x="767" y="141" text-anchor="middle" font-size="10.5" fill="#FF8B00">미방문 상태</text>
+        <text x="767" y="155" text-anchor="middle" font-size="10" fill="#97A0AF">도장 전 · 기본</text>
+
+        <!-- S02-A  cx=957 -->
+        <g filter="url(#sh1)">
+          <rect x="897" y="107" width="120" height="58" rx="7" fill="#FFFAE6" stroke="#FF991F" stroke-width="1.5"/>
+        </g>
+        <text x="957" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">S02-A</text>
+        <text x="957" y="141" text-anchor="middle" font-size="10.5" fill="#FF8B00">통장 팝업</text>
+        <text x="957" y="155" text-anchor="middle" font-size="10" fill="#97A0AF">도장 애니메이션</text>
+
+        <!-- CANCEL♦  cx=1147 -->
+        <g filter="url(#sh1)">
+          <rect x="1103" y="92" width="88" height="88" rx="5" transform="rotate(45,1147,136)" fill="#E6F0FF" stroke="#2684FF" stroke-width="1.5"/>
+        </g>
+        <text x="1147" y="127" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0747A6">T+400ms</text>
+        <text x="1147" y="141" text-anchor="middle" font-size="10.5" fill="#0747A6">취소?</text>
+
+        <!-- S02-B  cx=1321 -->
+        <g filter="url(#sh1)">
+          <rect x="1261" y="107" width="120" height="58" rx="7" fill="#E3FCEF" stroke="#36B37E" stroke-width="1.5"/>
+        </g>
+        <text x="1321" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">S02-B</text>
+        <text x="1321" y="141" text-anchor="middle" font-size="10.5" fill="#006644">도장 완료</text>
+        <text x="1321" y="155" text-anchor="middle" font-size="10" fill="#36B37E">Play Game 활성</text>
+
+        <!-- 게임 실행 pill  cx=1501 -->
+        <g filter="url(#sh1)">
+          <rect x="1446" y="116" width="110" height="40" rx="20" fill="#006644" stroke="#006644" stroke-width="1.5"/>
+        </g>
+        <text x="1501" y="132" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">게임 실행</text>
+        <text x="1501" y="147" text-anchor="middle" font-size="10" fill="#ABF5D1">→ 게임 화면</text>
+
+        <!-- S01-F  cx=419 cy=282 -->
+        <g filter="url(#sh1)">
+          <rect x="363" y="256" width="112" height="52" rx="7" fill="#FFEBE6" stroke="#FF5630" stroke-width="1.5"/>
+        </g>
+        <text x="419" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#BF2600">S01-F</text>
+        <text x="419" y="291" text-anchor="middle" font-size="10.5" fill="#FF5630">에러 화면</text>
+        <text x="419" y="304" text-anchor="middle" font-size="10" fill="#97A0AF">Try again</text>
+
+        <!-- S01-B  cx=593 cy=282 -->
+        <g filter="url(#sh1)">
+          <rect x="537" y="256" width="112" height="52" rx="7" fill="#DEEBFF" stroke="#4C9AFF" stroke-width="1.5"/>
+        </g>
+        <text x="593" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#0747A6">S01-B</text>
+        <text x="593" y="291" text-anchor="middle" font-size="10.5" fill="#0052CC">도장 완료</text>
+        <text x="593" y="304" text-anchor="middle" font-size="10" fill="#97A0AF">오늘 이미 찍음</text>
+
+        <!-- S02-C  cx=767 cy=282 -->
+        <g filter="url(#sh1)">
+          <rect x="711" y="256" width="112" height="52" rx="7" fill="#EAE6FF" stroke="#8777D9" stroke-width="1.5"/>
+        </g>
+        <text x="767" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#403294">S02-C</text>
+        <text x="767" y="291" text-anchor="middle" font-size="10.5" fill="#6554C0">통장 열람</text>
+        <text x="767" y="304" text-anchor="middle" font-size="10" fill="#97A0AF">읽기 전용</text>
+
+        <!-- S01-C/D dashed  cx=593 cy=382 -->
+        <g filter="url(#sh1)">
+          <rect x="531" y="356" width="124" height="52" rx="7" fill="#F4F5F7" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="5 3"/>
+        </g>
+        <text x="593" y="374" text-anchor="middle" font-size="11" font-weight="700" fill="#5E6C84">S01-C / D</text>
+        <text x="593" y="389" text-anchor="middle" font-size="10.5" fill="#97A0AF">첫방문 · 복귀</text>
+        <text x="593" y="402" text-anchor="middle" font-size="10" fill="#C1C7D0">→ S01-A 동일</text>
+
+        <!-- BACK  cx=1321 cy=282 -->
+        <g filter="url(#sh1)">
+          <rect x="1261" y="256" width="120" height="52" rx="7" fill="#F4F5F7" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="5 3"/>
+        </g>
+        <text x="1321" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#5E6C84">S01-B</text>
+        <text x="1321" y="291" text-anchor="middle" font-size="10.5" fill="#97A0AF">완료 상태 복귀</text>
+        <text x="1321" y="304" text-anchor="middle" font-size="10" fill="#C1C7D0">(동일 상태)</text>
+
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="ls" style="background:#F4F5F7;border:1.5px dashed #8993A4;"></div>연결점 (전 단계에서 이어짐)</div>
+      <div class="legend-item"><div class="ls" style="background:#DEEBFF;border:1.5px solid #4C9AFF;"></div>일반 화면 상태</div>
+      <div class="legend-item"><div class="ls" style="background:#FFFAE6;border:1.5px solid #FF991F;"></div>액션 필요 화면</div>
+      <div class="legend-item"><div class="ld" style="background:#E6F0FF;border:2px solid #2684FF;"></div>분기 · 결정</div>
+      <div class="legend-item"><div class="ls" style="background:#E3FCEF;border:1.5px solid #36B37E;"></div>완료 상태</div>
+      <div class="legend-item"><div class="ls" style="background:#EAE6FF;border:1.5px solid #8777D9;"></div>팝업 열람</div>
+      <div class="legend-item"><div class="ls" style="background:#FFEBE6;border:1.5px solid #FF5630;"></div>에러</div>
+      <div class="legend-item"><div class="ls" style="background:#F4F5F7;border:1.5px dashed #C1C7D0;"></div>참조 / 반환</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 2 — Phase 2 Lucky Rail
+══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="badge b-p2">Phase 2</span>
+    <span class="section-title">Lucky Rail — 선행 기획</span>
+    <span class="section-note">Phase 1 K1~K4 통과 판정 + PM 착수 승인 후 구현</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-scroll">
+      <svg width="900" height="200" viewBox="0 0 900 200">
+        <defs>
+          <filter id="sh2" x="-8%" y="-15%" width="116%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-color="#091E42" flood-opacity="0.08"/>
+          </filter>
+          <marker id="a2"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#8993A4"/></marker>
+          <marker id="a2g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#36B37E"/></marker>
+        </defs>
+
+        <!-- P2E → S03A -->
+        <line x1="148" y1="98" x2="195" y2="98" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- S03A → DICE -->
+        <line x1="320" y1="98" x2="380" y2="98" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a2)"/>
+        <rect x="322" y="83" width="56" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="350" y="94" text-anchor="middle" font-size="10" fill="#5E6C84">Roll All Dice</text>
+        <!-- DICE → ARRIVED♦ -->
+        <line x1="460" y1="98" x2="528" y2="98" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- ARRIVED♦ → S04 (yes) -->
+        <line x1="622" y1="98" x2="690" y2="98" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a2)"/>
+        <rect x="625" y="83" width="26" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="638" y="94" text-anchor="middle" font-size="10" fill="#5E6C84">예</text>
+        <!-- ARRIVED♦ → S03B (아니오, arc below) -->
+        <path d="M575,142 L575,162 L808,162 L808,130" stroke="#8993A4" stroke-width="1.5" fill="none" marker-end="url(#a2)"/>
+        <rect x="672" y="165" width="26" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="685" y="176" text-anchor="middle" font-size="10" fill="#5E6C84">아니오</text>
+        <!-- S04 → S03B -->
+        <line x1="810" y1="98" x2="858" y2="98" stroke="#36B37E" stroke-width="1.5" marker-end="url(#a2g)"/>
+
+        <!-- P2E pill -->
+        <g filter="url(#sh2)"><rect x="18" y="78" width="130" height="40" rx="20" fill="#EAE6FF" stroke="#6554C0" stroke-width="1.5"/></g>
+        <text x="83" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#403294">S01-B 완료</text>
+        <text x="83" y="109" text-anchor="middle" font-size="10" fill="#8777D9">스크롤 → 노출</text>
+        <!-- S03-A -->
+        <g filter="url(#sh2)"><rect x="195" y="69" width="125" height="58" rx="7" fill="#FFFAE6" stroke="#FF991F" stroke-width="1.5"/></g>
+        <text x="257" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">S03-A</text>
+        <text x="257" y="103" text-anchor="middle" font-size="10.5" fill="#FF8B00">Lucky Rail</text>
+        <text x="257" y="117" text-anchor="middle" font-size="10" fill="#97A0AF">주사위 미굴림</text>
+        <!-- DICE animation (dashed) -->
+        <g filter="url(#sh2)"><rect x="380" y="78" width="80" height="40" rx="7" fill="#F4F5F7" stroke="#C1C7D0" stroke-width="1.5" stroke-dasharray="5 3"/></g>
+        <text x="420" y="94" text-anchor="middle" font-size="11" font-weight="600" fill="#5E6C84">주사위</text>
+        <text x="420" y="109" text-anchor="middle" font-size="10" fill="#97A0AF">0.8s 애니</text>
+        <!-- ARRIVED♦ -->
+        <g filter="url(#sh2)"><rect x="532" y="54" width="88" height="88" rx="5" transform="rotate(45,576,98)" fill="#E6F0FF" stroke="#2684FF" stroke-width="1.5"/></g>
+        <text x="576" y="93" text-anchor="middle" font-size="10.5" font-weight="600" fill="#0747A6">도시</text>
+        <text x="576" y="107" text-anchor="middle" font-size="10.5" fill="#0747A6">도착?</text>
+        <!-- S04 -->
+        <g filter="url(#sh2)"><rect x="690" y="69" width="120" height="58" rx="7" fill="#EAE6FF" stroke="#8777D9" stroke-width="1.5"/></g>
+        <text x="750" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#403294">S04</text>
+        <text x="750" y="103" text-anchor="middle" font-size="10.5" fill="#6554C0">도시 엽서 팝업</text>
+        <text x="750" y="117" text-anchor="middle" font-size="10" fill="#97A0AF">6종 고정</text>
+        <!-- S03-B -->
+        <g filter="url(#sh2)"><rect x="858" y="69" width="120" height="58" rx="7" fill="#E3FCEF" stroke="#36B37E" stroke-width="1.5"/></g>
+        <text x="918" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">S03-B</text>
+        <text x="918" y="103" text-anchor="middle" font-size="10.5" fill="#006644">굴림 완료</text>
+        <text x="918" y="117" text-anchor="middle" font-size="10" fill="#36B37E">오늘 완료</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="ls" style="background:#EAE6FF;border:1.5px solid #6554C0;"></div>S01-B에서 이어짐</div>
+      <div class="legend-item"><div class="ls" style="background:#F4F5F7;border:1.5px dashed #C1C7D0;"></div>UI 내부 애니메이션</div>
+      <div class="legend-item"><div class="ls" style="background:#EAE6FF;border:1.5px solid #8777D9;"></div>도시 엽서 팝업 S04</div>
+      <div class="legend-item"><div class="ls" style="background:#E3FCEF;border:1.5px solid #36B37E;"></div>굴림 완료 S03-B</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 3 — 취소 타이밍 정책
+══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="badge b-sub">보조</span>
+    <span class="section-title">S02-A 도장 취소 타이밍 정책</span>
+  </div>
+  <div class="chart-card">
+    <div class="chart-scroll">
+      <svg width="900" height="280" viewBox="0 0 900 280">
+        <defs>
+          <filter id="sh3" x="-8%" y="-15%" width="116%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-color="#091E42" flood-opacity="0.08"/>
+          </filter>
+          <marker id="a3"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#8993A4"/></marker>
+          <marker id="a3r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#FF5630"/></marker>
+          <marker id="a3g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,1 7,4 0,7" fill="#36B37E"/></marker>
+        </defs>
+
+        <!-- TAP → T0 -->
+        <line x1="143" y1="140" x2="190" y2="140" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a3)"/>
+        <!-- T0 → T400♦ -->
+        <line x1="315" y1="140" x2="376" y2="140" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a3)"/>
+        <!-- T400♦ → T2200 (취소 없음) -->
+        <line x1="468" y1="140" x2="573" y2="140" stroke="#8993A4" stroke-width="1.5" marker-end="url(#a3)"/>
+        <rect x="475" y="124" width="60" height="15" rx="2" fill="#fff" stroke="#DFE1E6" stroke-width="1"/>
+        <text x="505" y="135" text-anchor="middle" font-size="10" fill="#5E6C84">취소 없이</text>
+        <!-- T2200 → S02B -->
+        <line x1="698" y1="140" x2="744" y2="140" stroke="#36B37E" stroke-width="1.5" marker-end="url(#a3g)"/>
+        <!-- T400♦ → CB (위, before) -->
+        <path d="M422,96 L422,42 L572,42" stroke="#FF5630" stroke-width="1.5" fill="none" marker-end="url(#a3r)"/>
+        <rect x="442" y="27" width="80" height="15" rx="2" fill="#FFEBE6" stroke="#FFBDAD" stroke-width="1"/>
+        <text x="482" y="38" text-anchor="middle" font-size="10" fill="#FF5630">T+400ms 이전 ×</text>
+        <!-- T400♦ → CA (아래, after) -->
+        <path d="M422,184 L422,238 L572,238" stroke="#FF5630" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#a3r)"/>
+        <rect x="442" y="241" width="80" height="15" rx="2" fill="#FFEBE6" stroke="#FFBDAD" stroke-width="1"/>
+        <text x="482" y="252" text-anchor="middle" font-size="10" fill="#FF8B00">T+400ms 이후 ×</text>
+
+        <!-- Nodes -->
+        <!-- TAP pill -->
+        <g filter="url(#sh3)"><rect x="18" y="120" width="125" height="40" rx="20" fill="#FFFAE6" stroke="#FF991F" stroke-width="1.5"/></g>
+        <text x="80" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#172B4D">Stamp 탭</text>
+        <text x="80" y="151" text-anchor="middle" font-size="10" fill="#FF8B00">버튼 탭 순간</text>
+        <!-- T0 -->
+        <g filter="url(#sh3)"><rect x="190" y="111" width="125" height="58" rx="7" fill="#DEEBFF" stroke="#4C9AFF" stroke-width="1.5"/></g>
+        <text x="252" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#0747A6">T + 0ms</text>
+        <text x="252" y="145" text-anchor="middle" font-size="10.5" fill="#0052CC">팝업 slideUp</text>
+        <text x="252" y="159" text-anchor="middle" font-size="10" fill="#97A0AF">0.4초 시작</text>
+        <!-- T400♦ -->
+        <g filter="url(#sh3)"><rect x="378" y="96" width="88" height="88" rx="5" transform="rotate(45,422,140)" fill="#FFFAE6" stroke="#FF991F" stroke-width="2"/></g>
+        <text x="422" y="135" text-anchor="middle" font-size="10.5" font-weight="700" fill="#FF8B00">T+400ms</text>
+        <text x="422" y="149" text-anchor="middle" font-size="10" fill="#FF8B00">잉크 진입점</text>
+        <!-- T2200 -->
+        <g filter="url(#sh3)"><rect x="573" y="111" width="125" height="58" rx="7" fill="#DEEBFF" stroke="#4C9AFF" stroke-width="1.5"/></g>
+        <text x="635" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#0747A6">T + 2200ms</text>
+        <text x="635" y="145" text-anchor="middle" font-size="10.5" fill="#0052CC">시퀀스 완료</text>
+        <text x="635" y="159" text-anchor="middle" font-size="10" fill="#97A0AF">취소 없이 진행</text>
+        <!-- CB (before) -->
+        <g filter="url(#sh3)"><rect x="572" y="22" width="200" height="42" rx="7" fill="#FFEBE6" stroke="#FF5630" stroke-width="1.5"/></g>
+        <text x="672" y="37" text-anchor="middle" font-size="11" font-weight="700" fill="#BF2600">팝업 닫힘 — 도장 취소</text>
+        <text x="672" y="52" text-anchor="middle" font-size="10" fill="#FF5630">→ S01-A 상태로 복귀</text>
+        <!-- CA (after) -->
+        <g filter="url(#sh3)"><rect x="572" y="218" width="200" height="42" rx="7" fill="#FFF4E5" stroke="#FFAB00" stroke-width="1.5" stroke-dasharray="5 3"/></g>
+        <text x="672" y="233" text-anchor="middle" font-size="11" font-weight="700" fill="#974F0C">팝업 닫힘 — 백그라운드 진행</text>
+        <text x="672" y="248" text-anchor="middle" font-size="10" fill="#FF8B00">완료 후 → S01-B 상태 전환</text>
+        <!-- S02B -->
+        <g filter="url(#sh3)"><rect x="744" y="120" width="130" height="40" rx="20" fill="#E3FCEF" stroke="#36B37E" stroke-width="1.5"/></g>
+        <text x="809" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#006644">S02-B</text>
+        <text x="809" y="151" text-anchor="middle" font-size="10" fill="#36B37E">도장 완료</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="ls" style="background:#FFEBE6;border:1.5px solid #FF5630;"></div>취소 가능 (T+400ms 이전 ×)</div>
+      <div class="legend-item"><div class="ls" style="background:#FFF4E5;border:1.5px dashed #FFAB00;"></div>취소 불가 — 백그라운드 진행 (T+400ms 이후 ×)</div>
+      <div class="legend-item"><div class="ls" style="background:#E3FCEF;border:1.5px solid #36B37E;"></div>정상 완료 (취소 없이)</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
